@@ -12,32 +12,129 @@
         }
 
         body {
-            font-family: 'Microsoft YaHei', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Microsoft YaHei', 'Consolas', monospace, Arial, sans-serif;
+            background: #0a0e27;
             min-height: 100vh;
             padding: 20px;
-            color: #333;
+            color: #e0e0e0;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 动态背景 - 水波效果 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.3) 0%, transparent 50%),
+                linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1629 100%);
+            z-index: -2;
+            animation: wave 20s ease-in-out infinite;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+
+        /* 气泡效果 */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(102, 126, 234, 0.1) 0%, transparent 2%),
+                radial-gradient(circle at 30% 60%, rgba(118, 75, 162, 0.1) 0%, transparent 2%),
+                radial-gradient(circle at 70% 40%, rgba(102, 126, 234, 0.1) 0%, transparent 2%),
+                radial-gradient(circle at 90% 80%, rgba(118, 75, 162, 0.1) 0%, transparent 2%);
+            z-index: -1;
+            animation: bubble 15s ease-in-out infinite;
+        }
+
+        @keyframes bubble {
+            0%, 100% { opacity: 0.5; transform: translateY(0); }
+            50% { opacity: 0.8; transform: translateY(-30px); }
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: white;
+            background: rgba(20, 25, 45, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(102, 126, 234, 0.2);
             overflow: hidden;
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
             color: white;
             padding: 30px;
             text-align: center;
+            position: relative;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.5);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
         }
 
         .header h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(102, 126, 234, 0.8), 0 0 40px rgba(118, 75, 162, 0.5);
+            letter-spacing: 2px;
+        }
+
+        .header-actions {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .header-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .header-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
         }
 
         .game-info {
@@ -50,23 +147,37 @@
         }
 
         .info-item {
-            background: white;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             padding: 15px;
             border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+
+        .info-item:hover {
+            border-color: rgba(102, 126, 234, 0.5);
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+            transform: translateY(-2px);
         }
 
         .info-item label {
             display: block;
             font-size: 0.9em;
-            color: #666;
+            color: #a0a0a0;
             margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .info-item .value {
             font-size: 1.5em;
             font-weight: bold;
             color: #667eea;
+            text-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+            font-family: 'Consolas', monospace;
         }
 
         .main-content {
@@ -77,17 +188,29 @@
         }
 
         .panel {
-            background: #f8f9fa;
+            background: rgba(30, 35, 55, 0.6);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             border-radius: 15px;
             padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+
+        .panel:hover {
+            border-color: rgba(102, 126, 234, 0.4);
+            box-shadow: 0 8px 40px rgba(102, 126, 234, 0.2), inset 0 1px 0 rgba(255,255,255,0.1);
         }
 
         .panel h2 {
             color: #667eea;
             margin-bottom: 15px;
             padding-bottom: 10px;
-            border-bottom: 2px solid #667eea;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+            text-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+            font-size: 1.3em;
+            letter-spacing: 1px;
         }
 
         .button {
@@ -248,9 +371,379 @@
             border-radius: 8px;
         }
 
+        /* 钓鱼场景样式 */
+        .fishing-scene {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2000;
+            overflow: hidden;
+        }
+
+        .scene-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: opacity 0.5s;
+        }
+
+        /* 不同水域的背景 */
+        .scene-background.stream {
+            background: linear-gradient(180deg, #87CEEB 0%, #4A90E2 50%, #2E5C8A 100%);
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(255,255,255,0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 60%, rgba(255,255,255,0.2) 0%, transparent 50%);
+        }
+
+        .scene-background.river {
+            background: linear-gradient(180deg, #4682B4 0%, #1E3A5F 50%, #0F1F35 100%);
+            background-image: 
+                radial-gradient(circle at 30% 40%, rgba(135,206,250,0.3) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(135,206,250,0.2) 0%, transparent 50%);
+        }
+
+        .scene-background.lake {
+            background: linear-gradient(180deg, #5F9EA0 0%, #2F4F4F 50%, #1A2F2F 100%);
+            background-image: 
+                radial-gradient(circle at 25% 35%, rgba(95,158,160,0.4) 0%, transparent 50%),
+                radial-gradient(circle at 75% 65%, rgba(95,158,160,0.3) 0%, transparent 50%);
+        }
+
+        .scene-background.bay {
+            background: linear-gradient(180deg, #4169E1 0%, #000080 50%, #000033 100%);
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(65,105,225,0.4) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(65,105,225,0.3) 0%, transparent 50%);
+        }
+
+        .scene-background.deep_sea {
+            background: linear-gradient(180deg, #000033 0%, #000022 50%, #000011 100%);
+            background-image: 
+                radial-gradient(circle at 30% 40%, rgba(102,126,234,0.2) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(118,75,162,0.2) 0%, transparent 50%);
+            animation: deepSeaGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes deepSeaGlow {
+            0%, 100% { filter: brightness(0.8); }
+            50% { filter: brightness(1.2); }
+        }
+
+        .scene-header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .scene-info {
+            display: flex;
+            gap: 20px;
+            color: white;
+            font-size: 1.1em;
+        }
+
+        .scene-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .scene-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .fishing-area {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+        }
+
+        .water-surface {
+            position: relative;
+            width: 100%;
+            height: 70%;
+            overflow: hidden;
+        }
+
+        /* 水面波纹动画 */
+        .water-surface::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 2px,
+                rgba(255,255,255,0.1) 2px,
+                rgba(255,255,255,0.1) 4px
+            );
+            animation: wave 3s linear infinite;
+        }
+
+        @keyframes wave {
+            0% { left: -100%; }
+            100% { left: 0%; }
+        }
+
+        /* 浮漂 */
+        .float {
+            position: absolute;
+            left: 50%;
+            top: 30%;
+            transform: translateX(-50%);
+            transition: all 0.3s;
+        }
+
+        .float-body {
+            width: 20px;
+            height: 30px;
+            background: linear-gradient(180deg, #FFD700 0%, #FFA500 100%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.5);
+            animation: floatBobbing 2s ease-in-out infinite;
+        }
+
+        @keyframes floatBobbing {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-5px) rotate(-2deg); }
+            75% { transform: translateY(5px) rotate(2deg); }
+        }
+
+        .float-line {
+            width: 2px;
+            height: 200px;
+            background: linear-gradient(180deg, transparent 0%, rgba(200,200,200,0.5) 100%);
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .float-line::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background: #888;
+            border-radius: 50%;
+        }
+
+        /* 浮漂咬钩动画 */
+        .float.biting {
+            animation: floatBiting 0.5s ease-in-out infinite;
+        }
+
+        @keyframes floatBiting {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-15px); }
+        }
+
+        .float.strong-bite {
+            animation: floatStrongBite 0.3s ease-in-out infinite;
+        }
+
+        @keyframes floatStrongBite {
+            0%, 100% { transform: translateX(-50%) translateY(0) scale(1); }
+            50% { transform: translateX(-50%) translateY(-20px) scale(1.1); }
+        }
+
+        .fishing-hint {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            border-radius: 15px;
+            border: 2px solid rgba(102, 126, 234, 0.5);
+            color: white;
+            text-align: center;
+            font-size: 1.2em;
+            z-index: 10;
+        }
+
+        .fishing-controls {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 10;
+        }
+
+        .fishing-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+        }
+
+        .fishing-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .fishing-btn:active {
+            transform: translateY(0);
+        }
+
+        /* 时机指示器 */
+        .timing-indicator {
+            position: absolute;
+            bottom: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            z-index: 10;
+        }
+
+        .timing-bar {
+            position: relative;
+            height: 30px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 15px;
+            border: 2px solid rgba(102, 126, 234, 0.5);
+            overflow: hidden;
+        }
+
+        .timing-zone {
+            position: absolute;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 0%, #4facfe 50%, transparent 100%);
+            width: 30%;
+            left: 35%;
+            animation: timingZonePulse 1s ease-in-out infinite;
+        }
+
+        @keyframes timingZonePulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .timing-marker {
+            position: absolute;
+            width: 4px;
+            height: 100%;
+            background: #fff;
+            left: 0;
+            animation: timingMarkerMove 3s linear infinite;
+            box-shadow: 0 0 10px rgba(255,255,255,0.8);
+        }
+
+        @keyframes timingMarkerMove {
+            0% { left: 0; }
+            100% { left: calc(100% - 4px); }
+        }
+
+        .timing-hint {
+            text-align: center;
+            color: white;
+            margin-top: 10px;
+            font-size: 0.9em;
+            text-shadow: 0 0 10px rgba(0,0,0,0.8);
+        }
+
+        /* 甩杆动画 */
+        .casting {
+            animation: castRod 1s ease-out;
+        }
+
+        @keyframes castRod {
+            0% { transform: translateX(-50%) translateY(0) rotate(0deg); }
+            50% { transform: translateX(-50%) translateY(-100px) rotate(45deg); }
+            100% { transform: translateX(-50%) translateY(0) rotate(0deg); }
+        }
+
+        /* 结果展示 */
+        .fishing-result {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+        }
+
+        .result-content {
+            background: rgba(30, 35, 55, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 20px;
+            border: 2px solid rgba(102, 126, 234, 0.5);
+            text-align: center;
+            color: white;
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .result-content.success {
+            border-color: #4facfe;
+            box-shadow: 0 10px 40px rgba(79, 172, 254, 0.3);
+        }
+
+        .result-content.failure {
+            border-color: #f5576c;
+            box-shadow: 0 10px 40px rgba(245, 87, 108, 0.3);
+        }
+
         @media (max-width: 768px) {
             .main-content {
                 grid-template-columns: 1fr;
+            }
+            
+            .fishing-hint {
+                font-size: 1em;
+                padding: 15px 20px;
+            }
+            
+            .fishing-btn {
+                padding: 12px 30px;
+                font-size: 1em;
             }
         }
     </style>
@@ -258,8 +751,17 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎣 CyberFishing</h1>
-            <p>回合制策略钓鱼游戏</p>
+            <div class="header-actions">
+                <button class="header-btn" onclick="openSettings()">⚙️ 设置</button>
+                <button class="header-btn" onclick="openMap()">🗺️ 地图</button>
+                <button class="header-btn" onclick="openEncyclopedia()">📚 图鉴</button>
+                <button class="header-btn" onclick="openAchievements()">🏆 成就</button>
+                <button class="header-btn" onclick="openHelp()">❓ 帮助</button>
+            </div>
+            <div class="header-content">
+                <h1>🎣 CyberFishing</h1>
+                <p>回合制策略钓鱼游戏</p>
+            </div>
         </div>
 
         <div class="game-info">
@@ -305,7 +807,7 @@
                     <div id="riskWarning"></div>
 
                     <button class="button" onclick="checkRisk()">检查风险</button>
-                    <button class="button success" onclick="attemptFishing()">开始钓鱼</button>
+                    <button class="button success" onclick="startFishingScene()">开始钓鱼</button>
                     <button class="button danger" onclick="endGame()" style="margin-top: 10px;">结束游戏并结算</button>
                 </div>
             </div>
@@ -352,6 +854,179 @@
                 <button class="button" onclick="closeSettlement()">关闭</button>
                 <button class="button success" onclick="resetGame()">重新开始</button>
             </div>
+        </div>
+
+        <!-- 地图可视化模态框 -->
+        <div class="modal" id="mapModal">
+            <div class="modal-content" style="max-width: 800px;">
+                <h2>🗺️ 水域地图</h2>
+                <div id="mapContent" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
+                </div>
+                <button class="button" onclick="closeMap()">关闭</button>
+            </div>
+        </div>
+
+        <!-- 设置面板模态框 -->
+        <div class="modal" id="settingsModal">
+            <div class="modal-content">
+                <h2>⚙️ 设置</h2>
+                <div style="margin: 20px 0;">
+                    <label style="display: flex; align-items: center; gap: 10px; margin: 15px 0;">
+                        <input type="checkbox" id="soundEnabled" checked onchange="toggleSound()">
+                        <span>启用音效</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; margin: 15px 0;">
+                        <input type="checkbox" id="musicEnabled" checked onchange="toggleMusic()">
+                        <span>启用背景音乐</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; margin: 15px 0;">
+                        <input type="range" id="volumeSlider" min="0" max="100" value="50" onchange="setVolume(this.value)">
+                        <span>音量: <span id="volumeValue">50</span>%</span>
+                    </label>
+                </div>
+                <button class="button" onclick="closeSettings()">关闭</button>
+            </div>
+        </div>
+
+        <!-- 图鉴系统模态框 -->
+        <div class="modal" id="encyclopediaModal">
+            <div class="modal-content" style="max-width: 900px;">
+                <h2>📚 鱼类图鉴</h2>
+                <div id="encyclopediaContent" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin: 20px 0; max-height: 70vh; overflow-y: auto;">
+                </div>
+                <button class="button" onclick="closeEncyclopedia()">关闭</button>
+            </div>
+        </div>
+
+        <!-- 成就墙模态框 -->
+        <div class="modal" id="achievementsModal">
+            <div class="modal-content" style="max-width: 800px;">
+                <h2>🏆 成就墙</h2>
+                <div id="achievementsWall" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
+                </div>
+                <button class="button" onclick="closeAchievements()">关闭</button>
+            </div>
+        </div>
+
+        <!-- 帮助系统模态框 -->
+        <div class="modal" id="helpModal">
+            <div class="modal-content" style="max-width: 700px;">
+                <h2>❓ 游戏帮助</h2>
+                <div style="margin: 20px 0; line-height: 1.8;">
+                    <h3>游戏目标</h3>
+                    <p>通过钓鱼、管理资源、升级船只，逐步探索更危险的水域，尽可能走得更远。</p>
+                    
+                    <h3>基本操作</h3>
+                    <ul style="margin: 10px 0; padding-left: 20px;">
+                        <li>选择水域 → 选择目标鱼类 → 选择鱼饵 → 开始钓鱼</li>
+                        <li>在商店购买船只、鱼饵和消耗品</li>
+                        <li>使用活鱼作为鱼饵（需要先钓到）</li>
+                    </ul>
+                    
+                    <h3>成功率计算</h3>
+                    <p>基础60% - (难度-1)×15% + 鱼饵加成(活鱼+20%) + 消耗品加成(幸运符+10%)</p>
+                    
+                    <h3>翻船风险</h3>
+                    <ul style="margin: 10px 0; padding-left: 20px;">
+                        <li>海湾：中船 + 难度5+ + 成功率<40% = 翻船（丢失所有鱼饵和鱼）</li>
+                        <li>深海：非大船 = 立即失败，大船 = 5%失败风险</li>
+                    </ul>
+                    
+                    <h3>深海阶段</h3>
+                    <ul style="margin: 10px 0; padding-left: 20px;">
+                        <li>探索：首次进入深海</li>
+                        <li>完成：钓到大王乌贼</li>
+                        <li>终极：钓到克苏鲁</li>
+                    </ul>
+                </div>
+                <button class="button" onclick="closeHelp()">关闭</button>
+            </div>
+        </div>
+
+        <!-- 风险警告弹窗 -->
+        <div class="modal" id="riskModal">
+            <div class="modal-content" style="max-width: 500px; border: 2px solid #f5576c;">
+                <h2 style="color: #f5576c;">⚠️ 风险警告</h2>
+                <div id="riskModalContent" style="margin: 20px 0; font-size: 1.1em; line-height: 1.8;"></div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="button danger" onclick="confirmRisk()">确认继续</button>
+                    <button class="button" onclick="cancelRisk()">取消</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 日志系统 -->
+        <div class="panel" style="margin: 20px; max-height: 200px; overflow-y: auto;">
+            <h2>📜 游戏日志</h2>
+            <div id="gameLog" style="font-size: 0.9em; color: #a0a0a0;"></div>
+        </div>
+
+        <!-- 深海阶段进度条 -->
+        <div class="panel" style="margin: 20px;" id="deepSeaProgressPanel" style="display: none;">
+            <h2>🌊 深海探索进度</h2>
+            <div style="margin: 15px 0;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <span>阶段: <span id="deepSeaStageText">未开始</span></span>
+                    <span id="deepSeaProgressText">0%</span>
+                </div>
+                <div style="background: rgba(0,0,0,0.3); border-radius: 10px; height: 20px; overflow: hidden; border: 1px solid rgba(102, 126, 234, 0.3);">
+                    <div id="deepSeaProgressBar" style="background: linear-gradient(90deg, #667eea, #764ba2); height: 100%; width: 0%; transition: width 0.5s; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8em;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 钓鱼场景页面 -->
+    <div id="fishingScene" class="fishing-scene" style="display: none;">
+        <div class="scene-background" id="sceneBackground"></div>
+        
+        <!-- 场景信息栏 -->
+        <div class="scene-header">
+            <div class="scene-info">
+                <span id="sceneEnvironmentName">溪流</span>
+                <span id="sceneTargetFish">目标：小鱼</span>
+            </div>
+            <button class="scene-btn" onclick="exitFishingScene()">返回</button>
+        </div>
+
+        <!-- 钓鱼区域 -->
+        <div class="fishing-area">
+            <!-- 水面 -->
+            <div class="water-surface" id="waterSurface">
+                <!-- 浮漂 -->
+                <div class="float" id="float">
+                    <div class="float-body"></div>
+                    <div class="float-line"></div>
+                </div>
+            </div>
+
+            <!-- 操作提示 -->
+            <div class="fishing-hint" id="fishingHint">
+                <div id="fishingStatus">准备甩杆...</div>
+                <div id="fishingTimer" style="font-size: 0.9em; margin-top: 10px; opacity: 0.8;"></div>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="fishing-controls">
+                <button class="fishing-btn" id="castBtn" onclick="castFishingRod()">甩杆</button>
+                <button class="fishing-btn" id="reelBtn" onclick="reelIn()" style="display: none;">收线</button>
+            </div>
+
+            <!-- 时机指示器 -->
+            <div class="timing-indicator" id="timingIndicator" style="display: none;">
+                <div class="timing-bar">
+                    <div class="timing-zone" id="timingZone"></div>
+                    <div class="timing-marker" id="timingMarker"></div>
+                </div>
+                <div class="timing-hint">等待最佳收线时机...</div>
+            </div>
+        </div>
+
+        <!-- 结果展示 -->
+        <div class="fishing-result" id="fishingResult" style="display: none;">
+            <div class="result-content" id="resultContent"></div>
+            <button class="fishing-btn" onclick="continueFishing()">继续钓鱼</button>
+            <button class="fishing-btn" onclick="exitFishingScene()">返回</button>
         </div>
     </div>
 
@@ -692,29 +1367,33 @@
             // 更新成就
             if (fish.id === 'giant_squid' && !gameState.achievements.includes('deep_sea_conqueror')) {
                 gameState.achievements.push('deep_sea_conqueror');
-                showMessage('🎉 解锁成就：深海征服者！', 'success');
+                addLog('🎉 解锁成就：深海征服者！', 'success');
             }
             if (fish.id === 'sperm_whale' && !gameState.achievements.includes('deep_sea_hunter')) {
                 gameState.achievements.push('deep_sea_hunter');
-                showMessage('🎉 解锁成就：深海猎人！', 'success');
+                addLog('🎉 解锁成就：深海猎人！', 'success');
             }
             if (fish.id === 'cthulhu' && !gameState.achievements.includes('forbidden_touch')) {
                 gameState.achievements.push('forbidden_touch');
-                showMessage('🎉 解锁成就：禁忌之触！', 'success');
+                addLog('🎉 解锁成就：禁忌之触！', 'success');
             }
 
             // 更新深海阶段
             if (fish.id === 'giant_squid' && gameState.deepSeaStage !== 'completed' && gameState.deepSeaStage !== 'ultimate') {
                 gameState.deepSeaStage = 'completed';
-                showMessage('🎉 深海探索完成！钓到大王乌贼！', 'success');
+                addLog('🎉 深海探索完成！钓到大王乌贼！', 'success');
             }
             if (fish.id === 'cthulhu') {
                 gameState.deepSeaStage = 'ultimate';
             }
 
-            showMessage(`🎣 成功钓到 ${fish.name}！重量: ${weight.toFixed(2)}kg，价值: ${price}元`, 'success');
+            addLog(`🎣 成功钓到 ${fish.name}！重量: ${weight.toFixed(2)}kg，价值: ${price}元`, 'success');
             saveGameState();
-            updateUI();
+            
+            // 如果不在场景中，更新UI
+            if (document.querySelector('.container').style.display !== 'none') {
+                updateUI();
+            }
         }
 
         function handleCapsize() {
@@ -1083,9 +1762,656 @@
         document.getElementById('environmentSelect').addEventListener('change', updateFishSelect);
         document.getElementById('fishSelect').addEventListener('change', updateBaitSelect);
 
+        // ========== 新增功能函数 ==========
+        
+        // 游戏日志
+        let gameLog = [];
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            gameLog.unshift({ timestamp, message, type });
+            if (gameLog.length > 20) gameLog.pop();
+            updateLogDisplay();
+        }
+
+        function updateLogDisplay() {
+            const logArea = document.getElementById('gameLog');
+            logArea.innerHTML = gameLog.map(log => 
+                `<div style="margin: 5px 0; padding: 5px; border-left: 3px solid ${
+                    log.type === 'success' ? '#4facfe' : 
+                    log.type === 'error' ? '#f5576c' : 
+                    log.type === 'warning' ? '#ffa726' : '#667eea'
+                };">
+                    <span style="color: #667eea;">[${log.timestamp}]</span> ${log.message}
+                </div>`
+            ).join('');
+        }
+
+        // 地图可视化
+        function openMap() {
+            const content = document.getElementById('mapContent');
+            content.innerHTML = '';
+            Object.values(ENVIRONMENT_CONFIG).forEach(env => {
+                const accessible = canBoatAccessEnvironment(gameState.boat, env.id);
+                const div = document.createElement('div');
+                div.className = 'panel';
+                div.style.opacity = accessible ? '1' : '0.5';
+                div.style.border = accessible ? '2px solid #667eea' : '2px solid #666';
+                div.innerHTML = `
+                    <h3 style="color: ${accessible ? '#667eea' : '#666'};">
+                        ${env.name} ${accessible ? '✓' : '🔒'}
+                    </h3>
+                    <p style="font-size: 0.9em; color: #a0a0a0;">
+                        ${env.hasCapsizeRisk ? '⚠️ 有翻船风险' : '✓ 安全水域'}
+                    </p>
+                    <p style="font-size: 0.8em; color: #888;">
+                        ${getFishByEnvironment(env.id).length} 种鱼类
+                    </p>
+                `;
+                content.appendChild(div);
+            });
+            document.getElementById('mapModal').classList.add('active');
+        }
+
+        function closeMap() {
+            document.getElementById('mapModal').classList.remove('active');
+        }
+
+        // 设置面板
+        function openSettings() {
+            document.getElementById('settingsModal').classList.add('active');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('active');
+        }
+
+        function toggleSound() {
+            const enabled = document.getElementById('soundEnabled').checked;
+            localStorage.setItem('cyberFishing_soundEnabled', enabled);
+        }
+
+        function toggleMusic() {
+            const enabled = document.getElementById('musicEnabled').checked;
+            localStorage.setItem('cyberFishing_musicEnabled', enabled);
+        }
+
+        function setVolume(value) {
+            document.getElementById('volumeValue').textContent = value;
+            localStorage.setItem('cyberFishing_volume', value);
+        }
+
+        // 图鉴系统
+        function openEncyclopedia() {
+            const content = document.getElementById('encyclopediaContent');
+            content.innerHTML = '';
+            Object.values(FISH_CONFIG).forEach(fish => {
+                const caught = gameState.caughtFish[fish.id];
+                const div = document.createElement('div');
+                div.className = 'panel';
+                div.style.opacity = caught ? '1' : '0.6';
+                div.innerHTML = `
+                    <h3 style="color: ${caught ? '#667eea' : '#666'};">
+                        ${fish.name} ${caught ? '✓' : '❓'}
+                    </h3>
+                    <p style="font-size: 0.9em; color: #a0a0a0;">
+                        难度: ${fish.difficulty} | 环境: ${ENVIRONMENT_CONFIG[fish.environment].name}
+                    </p>
+                    <p style="font-size: 0.9em; color: #a0a0a0;">
+                        类型: ${fish.type === 'herbivore' ? '植食' : fish.type === 'carnivore' ? '肉食' : '深海掠食'}
+                    </p>
+                    <p style="font-size: 0.9em; color: #a0a0a0;">
+                        基础价格: ${fish.basePrice}元
+                    </p>
+                    ${caught ? `
+                        <p style="font-size: 0.9em; color: #4facfe; margin-top: 10px;">
+                            已捕获: ${caught.count}次 | 最大重量: ${caught.maxWeight.toFixed(2)}kg
+                        </p>
+                    ` : '<p style="font-size: 0.8em; color: #888; margin-top: 10px;">未发现</p>'}
+                `;
+                content.appendChild(div);
+            });
+            document.getElementById('encyclopediaModal').classList.add('active');
+        }
+
+        function closeEncyclopedia() {
+            document.getElementById('encyclopediaModal').classList.remove('active');
+        }
+
+        // 成就墙
+        function openAchievements() {
+            const content = document.getElementById('achievementsWall');
+            content.innerHTML = '';
+            Object.values(ACHIEVEMENT_CONFIG).forEach(achievement => {
+                const hasAchievement = gameState.achievements.includes(achievement.id);
+                const div = document.createElement('div');
+                div.className = 'panel';
+                div.style.opacity = hasAchievement ? '1' : '0.5';
+                div.style.border = hasAchievement ? '2px solid #667eea' : '2px solid #666';
+                div.innerHTML = `
+                    <h3 style="color: ${hasAchievement ? '#667eea' : '#666'};">
+                        ${hasAchievement ? '🏆' : '🔒'} ${achievement.name}
+                    </h3>
+                    <p style="font-size: 0.9em; color: #a0a0a0;">
+                        ${hasAchievement ? '已解锁' : '未解锁'}
+                    </p>
+                `;
+                content.appendChild(div);
+            });
+            document.getElementById('achievementsModal').classList.add('active');
+        }
+
+        function closeAchievements() {
+            document.getElementById('achievementsModal').classList.remove('active');
+        }
+
+        // 帮助系统
+        function openHelp() {
+            document.getElementById('helpModal').classList.add('active');
+        }
+
+        function closeHelp() {
+            document.getElementById('helpModal').classList.remove('active');
+        }
+
+        // 风险警告弹窗
+        let pendingRiskAction = null;
+        function showRiskWarning(message, onConfirm) {
+            document.getElementById('riskModalContent').innerHTML = message;
+            pendingRiskAction = onConfirm;
+            document.getElementById('riskModal').classList.add('active');
+        }
+
+        function confirmRisk() {
+            if (pendingRiskAction) {
+                pendingRiskAction();
+                pendingRiskAction = null;
+            }
+            document.getElementById('riskModal').classList.remove('active');
+        }
+
+        function cancelRisk() {
+            pendingRiskAction = null;
+            document.getElementById('riskModal').classList.remove('active');
+        }
+
+        // 更新深海阶段进度
+        function updateDeepSeaProgress() {
+            const panel = document.getElementById('deepSeaProgressPanel');
+            if (gameState.deepSeaStage === 'none') {
+                panel.style.display = 'none';
+                return;
+            }
+            panel.style.display = 'block';
+            
+            const stageText = {
+                'none': '未开始',
+                'exploring': '探索中',
+                'completed': '已完成',
+                'ultimate': '终极'
+            };
+            
+            document.getElementById('deepSeaStageText').textContent = stageText[gameState.deepSeaStage] || '未知';
+            
+            const progress = {
+                'none': 0,
+                'exploring': 33,
+                'completed': 66,
+                'ultimate': 100
+            };
+            
+            const progressValue = progress[gameState.deepSeaStage] || 0;
+            document.getElementById('deepSeaProgressText').textContent = progressValue + '%';
+            document.getElementById('deepSeaProgressBar').style.width = progressValue + '%';
+            document.getElementById('deepSeaProgressBar').textContent = progressValue + '%';
+        }
+
+        // 修改showMessage函数，添加日志
+        const originalShowMessage = showMessage;
+        showMessage = function(message, type = 'info') {
+            originalShowMessage(message, type);
+            addLog(message, type);
+        };
+
+        // 修改checkRisk函数，添加风险警告弹窗
+        const originalCheckRisk = checkRisk;
+        checkRisk = function() {
+            const environmentId = document.getElementById('environmentSelect').value;
+            const fishId = document.getElementById('fishSelect').value;
+            const baitId = document.getElementById('baitSelect').value;
+            const useConsumable = document.getElementById('useConsumable').checked;
+
+            if (!fishId || !baitId) {
+                showMessage('请选择目标鱼类和鱼饵', 'error');
+                return;
+            }
+
+            const fish = FISH_CONFIG[fishId];
+            const successRate = calculateSuccessRate(fish, baitId, useConsumable);
+            const capsizeInfo = checkCapsizeRisk(environmentId, gameState.boat, fish, successRate);
+
+            let warning = `<div class="message info">成功率: ${successRate.toFixed(1)}%</div>`;
+            let riskMessage = '';
+            
+            if (capsizeInfo.risk) {
+                warning += `<div class="message warning">⚠️ ${capsizeInfo.message}</div>`;
+                riskMessage += `<p style="color: #f5576c; font-weight: bold;">⚠️ ${capsizeInfo.message}</p>`;
+            }
+            
+            if (environmentId === 'deep_sea') {
+                if (gameState.boat !== 'large') {
+                    warning += `<div class="message error">❌ 无法进入深海，需要大船。游戏将结束。</div>`;
+                    riskMessage += `<p style="color: #f5576c; font-weight: bold;">❌ 无法进入深海，需要大船。游戏将结束。</p>`;
+                } else {
+                    warning += `<div class="message warning">⚠️ 深海钓鱼：大船有5%失败风险（游戏结束）</div>`;
+                    riskMessage += `<p style="color: #ffa726; font-weight: bold;">⚠️ 深海钓鱼：大船有5%失败风险（游戏结束）</p>`;
+                }
+            }
+
+            document.getElementById('riskWarning').innerHTML = warning;
+            
+            // 如果有高风险，显示警告弹窗
+            if (capsizeInfo.risk && capsizeInfo.shouldCapsize || environmentId === 'deep_sea') {
+                showRiskWarning(riskMessage || '存在高风险，请谨慎操作！', () => {
+                    // 用户确认后可以继续
+                });
+            }
+        };
+
+        // ========== 钓鱼场景系统 ==========
+        let currentFishingState = {
+            environmentId: null,
+            fishId: null,
+            baitId: null,
+            useConsumable: false,
+            successRate: 0,
+            isCasting: false,
+            isWaiting: false,
+            biteTime: null,
+            timingWindow: { start: 0, end: 0 },
+            timingMarker: null
+        };
+
+        function startFishingScene() {
+            const environmentId = document.getElementById('environmentSelect').value;
+            const fishId = document.getElementById('fishSelect').value;
+            const baitId = document.getElementById('baitSelect').value;
+            const useConsumable = document.getElementById('useConsumable').checked;
+
+            if (!fishId || !baitId) {
+                showMessage('请选择目标鱼类和鱼饵', 'error');
+                return;
+            }
+
+            // 检查船只访问权限
+            if (!canBoatAccessEnvironment(gameState.boat, environmentId)) {
+                showMessage('当前船只无法进入此水域', 'error');
+                return;
+            }
+
+            const fish = FISH_CONFIG[fishId];
+            if (!fish || fish.environment !== environmentId) {
+                showMessage('无效的鱼类选择', 'error');
+                return;
+            }
+
+            // 验证鱼饵
+            const baitCheck = validateBait(baitId, fish);
+            if (!baitCheck.valid) {
+                showMessage(baitCheck.error, 'error');
+                return;
+            }
+
+            // 检查消耗品
+            if (useConsumable && (!gameState.consumables?.lucky_charm || gameState.consumables.lucky_charm <= 0)) {
+                showMessage('没有幸运符', 'error');
+                return;
+            }
+
+            // 计算成功率
+            const successRate = calculateSuccessRate(fish, baitId, useConsumable);
+
+            // 深海进入检查（在进入场景前）
+            if (environmentId === 'deep_sea') {
+                if (gameState.boat !== 'large') {
+                    handleDeepSeaFailure();
+                    return;
+                }
+                if (Math.random() < 0.05) {
+                    handleDeepSeaFailure();
+                    return;
+                }
+            }
+
+            // 检查成就（进入新环境）
+            if (environmentId === 'bay' && !gameState.achievements.includes('bay_adventurer')) {
+                gameState.achievements.push('bay_adventurer');
+            }
+            if (environmentId === 'deep_sea') {
+                if (!gameState.achievements.includes('deep_sea_explorer')) {
+                    gameState.achievements.push('deep_sea_explorer');
+                }
+                if (gameState.deepSeaStage === 'none') {
+                    gameState.deepSeaStage = 'exploring';
+                }
+            }
+
+            // 保存当前钓鱼状态
+            currentFishingState = {
+                environmentId,
+                fishId,
+                baitId,
+                useConsumable,
+                successRate,
+                isCasting: false,
+                isWaiting: false,
+                biteTime: null,
+                timingWindow: { start: 0, end: 0 },
+                timingMarker: null,
+                waitStartTime: null
+            };
+
+            // 设置场景背景
+            const sceneBackground = document.getElementById('sceneBackground');
+            sceneBackground.className = 'scene-background ' + environmentId;
+
+            // 更新场景信息
+            document.getElementById('sceneEnvironmentName').textContent = ENVIRONMENT_CONFIG[environmentId].name;
+            document.getElementById('sceneTargetFish').textContent = `目标：${fish.name}`;
+
+            // 显示场景
+            document.getElementById('fishingScene').style.display = 'block';
+            document.querySelector('.container').style.display = 'none';
+
+            // 重置状态
+            resetFishingScene();
+            addLog(`进入${ENVIRONMENT_CONFIG[environmentId].name}开始钓鱼`, 'info');
+        }
+
+        function resetFishingScene() {
+            document.getElementById('fishingStatus').textContent = '准备甩杆...';
+            document.getElementById('fishingTimer').textContent = '';
+            document.getElementById('castBtn').style.display = 'block';
+            document.getElementById('reelBtn').style.display = 'none';
+            document.getElementById('timingIndicator').style.display = 'none';
+            document.getElementById('fishingResult').style.display = 'none';
+            
+            const float = document.getElementById('float');
+            float.classList.remove('biting', 'strong-bite', 'casting');
+            float.style.display = 'none';
+        }
+
+        function castFishingRod() {
+            if (currentFishingState.isCasting || currentFishingState.isWaiting) return;
+
+            currentFishingState.isCasting = true;
+            document.getElementById('castBtn').style.display = 'none';
+            document.getElementById('fishingStatus').textContent = '甩杆中...';
+
+            const float = document.getElementById('float');
+            float.style.display = 'block';
+            float.classList.add('casting');
+
+            // 甩杆动画完成后
+            setTimeout(() => {
+                float.classList.remove('casting');
+                currentFishingState.isCasting = false;
+                currentFishingState.isWaiting = true;
+                startWaitingForBite();
+            }, 1000);
+        }
+
+        function startWaitingForBite() {
+            document.getElementById('fishingStatus').textContent = '等待鱼儿上钩...';
+            
+            const fish = FISH_CONFIG[currentFishingState.fishId];
+            const waitTime = 2000 + Math.random() * 3000; // 2-5秒等待
+            const biteWindow = 1000 + (fish.difficulty * 200); // 难度越高，窗口越小
+            
+            // 计算咬钩时间窗口（相对于开始等待的时间）
+            const startTime = Date.now();
+            const biteTime = waitTime + Math.random() * 2000;
+            const windowStart = biteTime - biteWindow / 2;
+            const windowEnd = biteTime + biteWindow / 2;
+
+            currentFishingState.biteTime = startTime + biteTime;
+            currentFishingState.timingWindow = { 
+                start: startTime + windowStart, 
+                end: startTime + windowEnd 
+            };
+            currentFishingState.waitStartTime = startTime;
+
+            let timer = setInterval(() => {
+                const now = Date.now();
+                const elapsed = now - startTime;
+                const remaining = Math.max(0, Math.ceil((biteTime + biteWindow / 2 - elapsed) / 1000));
+                document.getElementById('fishingTimer').textContent = remaining > 0 ? `预计${remaining}秒后咬钩` : '';
+
+                // 接近咬钩时间，开始浮漂动画
+                if (elapsed >= biteTime - 1000 && elapsed < biteTime) {
+                    const float = document.getElementById('float');
+                    if (!float.classList.contains('biting')) {
+                        float.classList.add('biting');
+                    }
+                }
+
+                // 最佳咬钩时机
+                if (elapsed >= biteTime && elapsed < biteTime + 500) {
+                    const float = document.getElementById('float');
+                    float.classList.remove('biting');
+                    if (!float.classList.contains('strong-bite')) {
+                        float.classList.add('strong-bite');
+                        showTimingIndicator();
+                    }
+                }
+
+                // 咬钩窗口结束
+                if (elapsed >= windowEnd) {
+                    clearInterval(timer);
+                    const float = document.getElementById('float');
+                    float.classList.remove('biting', 'strong-bite');
+                    if (!currentFishingState.timingMarker && currentFishingState.isWaiting) {
+                        // 错过时机
+                        setTimeout(() => {
+                            handleFishingMiss();
+                        }, 500);
+                    }
+                }
+            }, 100);
+        }
+
+        function showTimingIndicator() {
+            document.getElementById('timingIndicator').style.display = 'block';
+            document.getElementById('reelBtn').style.display = 'block';
+            document.getElementById('fishingStatus').textContent = '⚠️ 最佳收线时机！';
+            document.getElementById('fishingTimer').textContent = '快速点击收线！';
+
+            // 启动时机指示器动画
+            const marker = document.getElementById('timingMarker');
+            marker.style.animation = 'timingMarkerMove 2s linear infinite';
+        }
+
+        function reelIn() {
+            if (!currentFishingState.isWaiting) return;
+
+            const now = Date.now();
+            const window = currentFishingState.timingWindow;
+            
+            // 计算时机准确性
+            let timingAccuracy = 0;
+            if (window && now >= window.start && now <= window.end) {
+                // 在窗口内，计算准确度
+                const center = (window.start + window.end) / 2;
+                const distance = Math.abs(now - center);
+                const maxDistance = (window.end - window.start) / 2;
+                timingAccuracy = Math.max(0, 1 - (distance / maxDistance));
+            } else if (window && now < window.start) {
+                // 收线太早
+                timingAccuracy = -0.5;
+            } else {
+                // 收线太晚或错过窗口
+                timingAccuracy = -1;
+            }
+
+            currentFishingState.isWaiting = false;
+            currentFishingState.timingMarker = timingAccuracy;
+
+            // 隐藏浮漂和指示器
+            document.getElementById('float').style.display = 'none';
+            document.getElementById('timingIndicator').style.display = 'none';
+            document.getElementById('reelBtn').style.display = 'none';
+
+            // 执行钓鱼结果
+            executeFishingResult(timingAccuracy);
+        }
+
+        function executeFishingResult(timingAccuracy) {
+            const fish = FISH_CONFIG[currentFishingState.fishId];
+            const successRate = currentFishingState.successRate;
+            
+            // 时机准确度影响成功率
+            let finalSuccessRate = successRate;
+            if (timingAccuracy > 0) {
+                finalSuccessRate = Math.min(100, successRate + timingAccuracy * 20); // 最佳时机+20%
+            } else if (timingAccuracy < 0) {
+                finalSuccessRate = Math.max(0, successRate - 30); // 错过时机-30%
+            }
+
+            const roll = Math.random() * 100;
+            const fishingSuccess = roll < finalSuccessRate;
+
+            // 检查翻船风险
+            const capsizeInfo = checkCapsizeRisk(
+                currentFishingState.environmentId, 
+                gameState.boat, 
+                fish, 
+                finalSuccessRate
+            );
+
+            if (capsizeInfo.risk && !fishingSuccess && capsizeInfo.shouldCapsize) {
+                handleCapsize();
+                return;
+            }
+
+            // 消耗鱼饵
+            consumeBait(currentFishingState.baitId);
+
+            // 消耗消耗品
+            if (currentFishingState.useConsumable) {
+                gameState.consumables.lucky_charm = (gameState.consumables.lucky_charm || 0) - 1;
+            }
+
+            // 显示结果
+            showFishingResult(fishingSuccess, fish, timingAccuracy);
+        }
+
+        function showFishingResult(success, fish, timingAccuracy) {
+            const resultDiv = document.getElementById('fishingResult');
+            const contentDiv = document.getElementById('resultContent');
+            
+            resultDiv.style.display = 'block';
+            
+            if (success) {
+                contentDiv.className = 'result-content success';
+                const weight = fish.weightRange.min + Math.random() * (fish.weightRange.max - fish.weightRange.min);
+                const price = Math.floor(fish.basePrice * (1 + weight / 10));
+                
+                contentDiv.innerHTML = `
+                    <div style="font-size: 3em; margin-bottom: 20px;">🎣</div>
+                    <h2 style="color: #4facfe; margin-bottom: 15px;">成功钓到！</h2>
+                    <p style="font-size: 1.2em; margin: 10px 0;">${fish.name}</p>
+                    <p style="color: #a0a0a0; margin: 10px 0;">重量: ${weight.toFixed(2)}kg</p>
+                    <p style="color: #4facfe; margin: 10px 0; font-size: 1.3em;">价值: ${price}元</p>
+                    ${timingAccuracy > 0.8 ? '<p style="color: #FFD700; margin-top: 15px;">⭐ 完美时机！</p>' : ''}
+                `;
+                
+                // handleFishingSuccess会在内部更新游戏状态
+                handleFishingSuccess(fish);
+            } else {
+                contentDiv.className = 'result-content failure';
+                contentDiv.innerHTML = `
+                    <div style="font-size: 3em; margin-bottom: 20px;">😔</div>
+                    <h2 style="color: #f5576c; margin-bottom: 15px;">钓鱼失败</h2>
+                    <p style="color: #a0a0a0; margin: 10px 0;">鱼儿逃脱了...</p>
+                    ${timingAccuracy < 0 ? '<p style="color: #ffa726; margin-top: 15px;">⚠️ 错过了最佳收线时机</p>' : ''}
+                `;
+                addLog('钓鱼失败，消耗了1个鱼饵', 'error');
+            }
+            
+            saveGameState();
+        }
+
+        function handleFishingMiss() {
+            if (!currentFishingState.isWaiting) return;
+            currentFishingState.isWaiting = false;
+            
+            const resultDiv = document.getElementById('fishingResult');
+            const contentDiv = document.getElementById('resultContent');
+            
+            resultDiv.style.display = 'block';
+            contentDiv.className = 'result-content failure';
+            contentDiv.innerHTML = `
+                <div style="font-size: 3em; margin-bottom: 20px;">⏰</div>
+                <h2 style="color: #f5576c; margin-bottom: 15px;">错过时机</h2>
+                <p style="color: #a0a0a0; margin: 10px 0;">没有及时收线，鱼儿逃走了...</p>
+            `;
+            
+            // 消耗鱼饵
+            consumeBait(currentFishingState.baitId);
+            addLog('错过收线时机，鱼儿逃走了', 'warning');
+            saveGameState();
+        }
+
+        function continueFishing() {
+            resetFishingScene();
+        }
+
+        function exitFishingScene() {
+            document.getElementById('fishingScene').style.display = 'none';
+            document.querySelector('.container').style.display = 'block';
+            resetFishingScene();
+            updateUI();
+        }
+
+        // 添加脉冲动画
+        const style = document.createElement('style');
+        style.textContent += `
+            @keyframes pulse {
+                0%, 100% { transform: scale(1); opacity: 1; }
+                50% { transform: scale(1.2); opacity: 0.7; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 修改updateUI函数，添加深海进度更新
+        const originalUpdateUI = updateUI;
+        updateUI = function() {
+            originalUpdateUI();
+            updateDeepSeaProgress();
+        };
+
+        // 初始化设置
+        function initSettings() {
+            const soundEnabled = localStorage.getItem('cyberFishing_soundEnabled');
+            const musicEnabled = localStorage.getItem('cyberFishing_musicEnabled');
+            const volume = localStorage.getItem('cyberFishing_volume');
+            
+            if (soundEnabled !== null) {
+                document.getElementById('soundEnabled').checked = soundEnabled === 'true';
+            }
+            if (musicEnabled !== null) {
+                document.getElementById('musicEnabled').checked = musicEnabled === 'true';
+            }
+            if (volume !== null) {
+                document.getElementById('volumeSlider').value = volume;
+                document.getElementById('volumeValue').textContent = volume;
+            }
+        }
+
         // ========== 初始化 ==========
         loadGameState();
+        initSettings();
         updateUI();
+        addLog('游戏已加载', 'info');
     </script>
 </body>
 </html>
