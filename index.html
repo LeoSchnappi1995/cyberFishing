@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberFishing - 钓鱼游戏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .game-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .info-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .info-item label {
+            display: block;
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .info-item .value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .panel {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .panel h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 5px;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .button.danger {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .button.success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1em;
+            margin: 5px 0;
+        }
+
+        .fish-list, .bait-list, .boat-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .fish-item, .bait-item, .boat-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .fish-item h3 {
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .fish-item .info {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .message {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .achievements {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .achievement {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .achievement.locked {
+            background: #ccc;
+            opacity: 0.5;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-content h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .settlement-item {
+            padding: 10px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎣 CyberFishing</h1>
+            <p>回合制策略钓鱼游戏</p>
+        </div>
+
+        <div class="game-info">
+            <div class="info-item">
+                <label>💰 金钱</label>
+                <div class="value" id="money">500</div>
+            </div>
+            <div class="info-item">
+                <label>🚤 船只</label>
+                <div class="value" id="boat">无船</div>
+            </div>
+            <div class="info-item">
+                <label>🎣 已钓鱼种</label>
+                <div class="value" id="caughtCount">0</div>
+            </div>
+            <div class="info-item">
+                <label>🏆 称号</label>
+                <div class="value" id="achievementCount">1</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- 左侧：钓鱼区域 -->
+            <div class="panel">
+                <h2>🎣 钓鱼</h2>
+                <div id="fishingArea">
+                    <label>选择水域：</label>
+                    <select id="environmentSelect">
+                        <option value="stream">溪流</option>
+                        <option value="river">江边</option>
+                    </select>
+
+                    <label>目标鱼类：</label>
+                    <select id="fishSelect"></select>
+
+                    <label>选择鱼饵：</label>
+                    <select id="baitSelect"></select>
+
+                    <label>
+                        <input type="checkbox" id="useConsumable"> 使用幸运符 (+10%)
+                    </label>
+
+                    <div id="riskWarning"></div>
+
+                    <button class="button" onclick="checkRisk()">检查风险</button>
+                    <button class="button success" onclick="attemptFishing()">开始钓鱼</button>
+                    <button class="button danger" onclick="endGame()" style="margin-top: 10px;">结束游戏并结算</button>
+                </div>
+            </div>
+
+            <!-- 右侧：商店和库存 -->
+            <div class="panel">
+                <h2>🏪 商店</h2>
+                <div id="shopArea">
+                    <h3>购买船只</h3>
+                    <div id="boatShop"></div>
+
+                    <h3>购买鱼饵</h3>
+                    <div id="baitShop"></div>
+
+                    <h3>购买消耗品</h3>
+                    <div id="consumableShop"></div>
+                </div>
+
+                <h2 style="margin-top: 20px;">📦 库存</h2>
+                <div id="inventoryArea">
+                    <h3>鱼饵库存</h3>
+                    <div id="baitInventory"></div>
+
+                    <h3>活鱼库存（可用作鱼饵）</h3>
+                    <div id="liveFishInventory"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 成就区域 -->
+        <div class="panel" style="margin: 20px;">
+            <h2>🏆 成就与称号</h2>
+            <div id="achievementsArea" class="achievements"></div>
+        </div>
+
+        <!-- 消息区域 -->
+        <div id="messageArea" style="padding: 20px;"></div>
+
+        <!-- 结算模态框 -->
+        <div class="modal" id="settlementModal">
+            <div class="modal-content">
+                <h2>游戏结算</h2>
+                <div id="settlementContent"></div>
+                <button class="button" onclick="closeSettlement()">关闭</button>
+                <button class="button success" onclick="resetGame()">重新开始</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== 游戏配置 ==========
+        const FISH_CONFIG = {
+            small_fish: { id: 'small_fish', name: '小鱼', environment: 'stream', difficulty: 1, type: 'herbivore', requiredBaitType: 'plant', weightRange: { min: 0.1, max: 0.5 }, basePrice: 10, canBeBait: true },
+            stream_fish: { id: 'stream_fish', name: '溪鱼', environment: 'stream', difficulty: 2, type: 'herbivore', requiredBaitType: 'plant', weightRange: { min: 0.3, max: 0.8 }, basePrice: 25, canBeBait: true },
+            catfish: { id: 'catfish', name: '鲶鱼', environment: 'stream', difficulty: 3, type: 'carnivore', requiredBaitType: 'live_fish', weightRange: { min: 0.5, max: 2.0 }, basePrice: 50, canBeBait: true },
+            river_carp: { id: 'river_carp', name: '江鲤', environment: 'river', difficulty: 2, type: 'herbivore', requiredBaitType: 'plant', weightRange: { min: 0.5, max: 1.5 }, basePrice: 30, canBeBait: true },
+            river_pike: { id: 'river_pike', name: '江鲈', environment: 'river', difficulty: 3, type: 'carnivore', requiredBaitType: 'live_fish', weightRange: { min: 1.0, max: 3.0 }, basePrice: 60, canBeBait: true },
+            lake_trout: { id: 'lake_trout', name: '湖鳟', environment: 'lake', difficulty: 3, type: 'carnivore', requiredBaitType: 'live_fish', weightRange: { min: 1.5, max: 4.0 }, basePrice: 80, canBeBait: true },
+            lake_bass: { id: 'lake_bass', name: '湖鲈', environment: 'lake', difficulty: 4, type: 'carnivore', requiredBaitType: 'live_fish', weightRange: { min: 2.0, max: 5.0 }, basePrice: 120, canBeBait: true },
+            bay_tuna: { id: 'bay_tuna', name: '海湾金枪鱼', environment: 'bay', difficulty: 4, type: 'carnivore', requiredBaitType: 'live_fish', weightRange: { min: 5.0, max: 15.0 }, basePrice: 200, canBeBait: true },
+            bay_shark: { id: 'bay_shark', name: '大白鲨', environment: 'bay', difficulty: 5, type: 'deep_predator', requiredBaitType: 'live_fish', weightRange: { min: 50.0, max: 200.0 }, basePrice: 500, canBeBait: true },
+            giant_squid: { id: 'giant_squid', name: '大王乌贼', environment: 'deep_sea', difficulty: 5, type: 'deep_predator', requiredBaitType: 'live_fish', requiredSpecificBait: ['bay_shark', 'bay_tuna'], weightRange: { min: 100.0, max: 300.0 }, basePrice: 1000, canBeBait: true },
+            sperm_whale: { id: 'sperm_whale', name: '抹香鲸', environment: 'deep_sea', difficulty: 5, type: 'deep_predator', requiredBaitType: 'live_fish', requiredSpecificBait: ['giant_squid'], weightRange: { min: 500.0, max: 2000.0 }, basePrice: 2000, canBeBait: true },
+            cthulhu: { id: 'cthulhu', name: '克苏鲁', environment: 'deep_sea', difficulty: 6, type: 'deep_predator', requiredBaitType: 'live_fish', requiredSpecificBait: ['sperm_whale'], weightRange: { min: 1000.0, max: 5000.0 }, basePrice: 5000, canBeBait: false }
+        };
+
+        const BOAT_CONFIG = {
+            none: { id: 'none', name: '无船', price: 0, accessibleEnvironments: ['stream', 'river'] },
+            small: { id: 'small', name: '小船', price: 300, accessibleEnvironments: ['stream', 'river', 'lake'] },
+            medium: { id: 'medium', name: '中船', price: 600, accessibleEnvironments: ['stream', 'river', 'lake', 'bay'] },
+            large: { id: 'large', name: '大船', price: 1200, accessibleEnvironments: ['stream', 'river', 'lake', 'bay', 'deep_sea'] }
+        };
+
+        const ENVIRONMENT_CONFIG = {
+            stream: { id: 'stream', name: '溪流', unlockCondition: 'default', hasCapsizeRisk: false },
+            river: { id: 'river', name: '江边', unlockCondition: 'default', hasCapsizeRisk: false },
+            lake: { id: 'lake', name: '湖泊', unlockCondition: 'small_boat', hasCapsizeRisk: false },
+            bay: { id: 'bay', name: '海湾', unlockCondition: 'medium_boat', hasCapsizeRisk: true },
+            deep_sea: { id: 'deep_sea', name: '深海', unlockCondition: 'large_boat', hasCapsizeRisk: true }
+        };
+
+        const ACHIEVEMENT_CONFIG = {
+            beginner_angler: { id: 'beginner_angler', name: '初心钓手' },
+            bay_adventurer: { id: 'bay_adventurer', name: '海湾冒险者' },
+            deep_sea_explorer: { id: 'deep_sea_explorer', name: '深海探路者' },
+            deep_sea_conqueror: { id: 'deep_sea_conqueror', name: '深海征服者' },
+            deep_sea_hunter: { id: 'deep_sea_hunter', name: '深海猎人' },
+            forbidden_touch: { id: 'forbidden_touch', name: '禁忌之触' }
+        };
+
+        const BAIT_CONFIG = {
+            plant: { id: 'plant', name: '植物性饵料', price: 5 },
+            dead_fish: { id: 'dead_fish', name: '鱼块（死鱼）', price: 15 }
+        };
+
+        const CONSUMABLE_CONFIG = {
+            lucky_charm: { id: 'lucky_charm', name: '幸运符', price: 50 }
+        };
+
+        // ========== 游戏状态 ==========
+        let gameState = {
+            money: 500,
+            boat: 'none',
+            baitInventory: { plant: 0, dead_fish: 0 },
+            liveFishInventory: {},
+            caughtFish: {},
+            achievements: ['beginner_angler'],
+            gameStartTime: Date.now(),
+            lastUpdateTime: Date.now(),
+            gameTime: 0,
+            deathCount: 0,
+            deepSeaStage: 'none',
+            gameOver: false,
+            consumables: {}
+        };
+
+        // ========== 数据持久化 ==========
+        function saveGameState() {
+            gameState.lastUpdateTime = Date.now();
+            const timeDiff = Math.floor((Date.now() - gameState.gameStartTime) / 1000);
+            gameState.gameTime = timeDiff;
+            localStorage.setItem('cyberFishing_gameState', JSON.stringify(gameState));
+        }
+
+        function loadGameState() {
+            const saved = localStorage.getItem('cyberFishing_gameState');
+            if (saved) {
+                gameState = JSON.parse(saved);
+                // 更新游戏时间
+                const timeDiff = Math.floor((Date.now() - gameState.lastUpdateTime) / 1000);
+                gameState.gameTime += timeDiff;
+                gameState.lastUpdateTime = Date.now();
+            }
+        }
+
+        function resetGameState() {
+            gameState = {
+                money: 500,
+                boat: 'none',
+                baitInventory: { plant: 0, dead_fish: 0 },
+                liveFishInventory: {},
+                caughtFish: {},
+                achievements: ['beginner_angler'],
+                gameStartTime: Date.now(),
+                lastUpdateTime: Date.now(),
+                gameTime: 0,
+                deathCount: 0,
+                deepSeaStage: 'none',
+                gameOver: false,
+                consumables: {}
+            };
+            saveGameState();
+            updateUI();
+        }
+
+        // ========== 工具函数 ==========
+        function canBoatAccessEnvironment(boatId, environmentId) {
+            const boat = BOAT_CONFIG[boatId];
+            return boat && boat.accessibleEnvironments.includes(environmentId);
+        }
+
+        function getFishByEnvironment(environmentId) {
+            return Object.values(FISH_CONFIG).filter(fish => fish.environment === environmentId);
+        }
+
+        function calculateSuccessRate(fish, baitId, useConsumable) {
+            let successRate = 60;
+            const rodLevel = 1;
+            const adjustment = (fish.difficulty - rodLevel) * 15;
+            successRate -= adjustment;
+            
+            if (baitId !== 'plant' && baitId !== 'dead_fish') {
+                successRate += 20; // 活鱼 +20%
+            }
+            
+            if (useConsumable) {
+                successRate += 10; // 幸运符 +10%
+            }
+            
+            return Math.max(0, Math.min(100, successRate));
+        }
+
+        function checkCapsizeRisk(environmentId, boatId, fish, successRate) {
+            if (environmentId === 'bay') {
+                if (boatId === 'medium' && fish.difficulty >= 5 && successRate < 40) {
+                    return { risk: true, shouldCapsize: true, message: '高风险：中船 + 难度5+ + 成功率<40%，可能翻船' };
+                }
+            }
+            if (environmentId === 'deep_sea') {
+                if (boatId !== 'large') {
+                    return { risk: true, shouldCapsize: true, message: '无法进入深海，需要大船' };
+                }
+                return { risk: true, shouldCapsize: false, message: '深海钓鱼：大船有5%失败风险（游戏结束）' };
+            }
+            return { risk: false };
+        }
+
+        // ========== 游戏逻辑 ==========
+        function checkRisk() {
+            const environmentId = document.getElementById('environmentSelect').value;
+            const fishId = document.getElementById('fishSelect').value;
+            const baitId = document.getElementById('baitSelect').value;
+            const useConsumable = document.getElementById('useConsumable').checked;
+
+            if (!fishId || !baitId) {
+                showMessage('请选择目标鱼类和鱼饵', 'error');
+                return;
+            }
+
+            const fish = FISH_CONFIG[fishId];
+            const successRate = calculateSuccessRate(fish, baitId, useConsumable);
+            const capsizeInfo = checkCapsizeRisk(environmentId, gameState.boat, fish, successRate);
+
+            let warning = `<div class="message info">成功率: ${successRate.toFixed(1)}%</div>`;
+            if (capsizeInfo.risk) {
+                warning += `<div class="message warning">⚠️ ${capsizeInfo.message}</div>`;
+            }
+            if (environmentId === 'deep_sea') {
+                if (gameState.boat !== 'large') {
+                    warning += `<div class="message error">❌ 无法进入深海，需要大船。游戏将结束。</div>`;
+                } else {
+                    warning += `<div class="message warning">⚠️ 深海钓鱼：大船有5%失败风险（游戏结束）</div>`;
+                }
+            }
+
+            document.getElementById('riskWarning').innerHTML = warning;
+        }
+
+        function attemptFishing() {
+            if (gameState.gameOver) {
+                showMessage('游戏已结束', 'error');
+                return;
+            }
+
+            const environmentId = document.getElementById('environmentSelect').value;
+            const fishId = document.getElementById('fishSelect').value;
+            const baitId = document.getElementById('baitSelect').value;
+            const useConsumable = document.getElementById('useConsumable').checked;
+
+            if (!fishId || !baitId) {
+                showMessage('请选择目标鱼类和鱼饵', 'error');
+                return;
+            }
+
+            // 检查船只访问权限
+            if (!canBoatAccessEnvironment(gameState.boat, environmentId)) {
+                showMessage('当前船只无法进入此水域', 'error');
+                return;
+            }
+
+            const fish = FISH_CONFIG[fishId];
+            if (!fish || fish.environment !== environmentId) {
+                showMessage('无效的鱼类选择', 'error');
+                return;
+            }
+
+            // 检查成就（进入新环境）
+            if (environmentId === 'bay' && !gameState.achievements.includes('bay_adventurer')) {
+                gameState.achievements.push('bay_adventurer');
+            }
+            if (environmentId === 'deep_sea') {
+                if (!gameState.achievements.includes('deep_sea_explorer')) {
+                    gameState.achievements.push('deep_sea_explorer');
+                }
+                if (gameState.deepSeaStage === 'none') {
+                    gameState.deepSeaStage = 'exploring';
+                }
+            }
+
+            // 深海进入检查
+            if (environmentId === 'deep_sea') {
+                if (gameState.boat !== 'large') {
+                    handleDeepSeaFailure();
+                    return;
+                }
+                if (Math.random() < 0.05) {
+                    handleDeepSeaFailure();
+                    return;
+                }
+            }
+
+            // 验证鱼饵
+            const baitCheck = validateBait(baitId, fish);
+            if (!baitCheck.valid) {
+                showMessage(baitCheck.error, 'error');
+                return;
+            }
+
+            // 检查消耗品
+            if (useConsumable && (!gameState.consumables?.lucky_charm || gameState.consumables.lucky_charm <= 0)) {
+                showMessage('没有幸运符', 'error');
+                return;
+            }
+
+            // 计算成功率
+            const successRate = calculateSuccessRate(fish, baitId, useConsumable);
+            const roll = Math.random() * 100;
+            const fishingSuccess = roll < successRate;
+
+            // 检查翻船风险
+            const capsizeInfo = checkCapsizeRisk(environmentId, gameState.boat, fish, successRate);
+            if (capsizeInfo.risk && !fishingSuccess && capsizeInfo.shouldCapsize) {
+                handleCapsize();
+                return;
+            }
+
+            // 消耗鱼饵
+            consumeBait(baitId);
+
+            // 消耗消耗品
+            if (useConsumable) {
+                gameState.consumables.lucky_charm = (gameState.consumables.lucky_charm || 0) - 1;
+            }
+
+            if (fishingSuccess) {
+                handleFishingSuccess(fish);
+            } else {
+                showMessage('钓鱼失败，消耗了1个鱼饵', 'error');
+                saveGameState();
+                updateUI();
+            }
+        }
+
+        function validateBait(baitId, fish) {
+            if (fish.requiredBaitType === 'live_fish') {
+                if (fish.requiredSpecificBait) {
+                    if (!fish.requiredSpecificBait.includes(baitId)) {
+                        return { valid: false, error: `此鱼需要特定的活鱼鱼饵: ${fish.requiredSpecificBait.map(id => FISH_CONFIG[id].name).join('或')}` };
+                    }
+                }
+                if (!gameState.liveFishInventory[baitId] || gameState.liveFishInventory[baitId] <= 0) {
+                    return { valid: false, error: '没有可用的活鱼鱼饵' };
+                }
+                return { valid: true };
+            }
+
+            if (baitId === 'plant') {
+                if (fish.type !== 'herbivore') {
+                    return { valid: false, error: '植物性饵料只能钓植食性鱼' };
+                }
+                if (!gameState.baitInventory.plant || gameState.baitInventory.plant <= 0) {
+                    return { valid: false, error: '没有植物性饵料' };
+                }
+                return { valid: true };
+            }
+
+            if (baitId === 'dead_fish') {
+                if (!gameState.baitInventory.dead_fish || gameState.baitInventory.dead_fish <= 0) {
+                    return { valid: false, error: '没有鱼块' };
+                }
+                return { valid: true };
+            }
+
+            return { valid: false, error: '无效的鱼饵' };
+        }
+
+        function consumeBait(baitId) {
+            if (baitId === 'plant') {
+                gameState.baitInventory.plant = Math.max(0, gameState.baitInventory.plant - 1);
+            } else if (baitId === 'dead_fish') {
+                gameState.baitInventory.dead_fish = Math.max(0, gameState.baitInventory.dead_fish - 1);
+            } else {
+                gameState.liveFishInventory[baitId] = Math.max(0, (gameState.liveFishInventory[baitId] || 0) - 1);
+            }
+        }
+
+        function handleFishingSuccess(fish) {
+            const weight = fish.weightRange.min + Math.random() * (fish.weightRange.max - fish.weightRange.min);
+            const price = Math.floor(fish.basePrice * (1 + weight / 10));
+
+            // 更新已钓鱼记录
+            const fishRecord = gameState.caughtFish[fish.id] || { count: 0, firstCaught: Date.now(), maxWeight: 0 };
+            gameState.caughtFish[fish.id] = {
+                count: fishRecord.count + 1,
+                firstCaught: fishRecord.firstCaught,
+                maxWeight: Math.max(fishRecord.maxWeight, weight)
+            };
+
+            // 添加到活鱼库存
+            if (fish.canBeBait) {
+                gameState.liveFishInventory[fish.id] = (gameState.liveFishInventory[fish.id] || 0) + 1;
+            }
+
+            // 更新成就
+            if (fish.id === 'giant_squid' && !gameState.achievements.includes('deep_sea_conqueror')) {
+                gameState.achievements.push('deep_sea_conqueror');
+                showMessage('🎉 解锁成就：深海征服者！', 'success');
+            }
+            if (fish.id === 'sperm_whale' && !gameState.achievements.includes('deep_sea_hunter')) {
+                gameState.achievements.push('deep_sea_hunter');
+                showMessage('🎉 解锁成就：深海猎人！', 'success');
+            }
+            if (fish.id === 'cthulhu' && !gameState.achievements.includes('forbidden_touch')) {
+                gameState.achievements.push('forbidden_touch');
+                showMessage('🎉 解锁成就：禁忌之触！', 'success');
+            }
+
+            // 更新深海阶段
+            if (fish.id === 'giant_squid' && gameState.deepSeaStage !== 'completed' && gameState.deepSeaStage !== 'ultimate') {
+                gameState.deepSeaStage = 'completed';
+                showMessage('🎉 深海探索完成！钓到大王乌贼！', 'success');
+            }
+            if (fish.id === 'cthulhu') {
+                gameState.deepSeaStage = 'ultimate';
+            }
+
+            showMessage(`🎣 成功钓到 ${fish.name}！重量: ${weight.toFixed(2)}kg，价值: ${price}元`, 'success');
+            saveGameState();
+            updateUI();
+        }
+
+        function handleCapsize() {
+            gameState.baitInventory = { plant: 0, dead_fish: 0 };
+            gameState.liveFishInventory = {};
+            gameState.deathCount = (gameState.deathCount || 0) + 1;
+            showMessage('💥 翻船了！所有鱼饵和鱼都丢失了。返回岸边。', 'error');
+            saveGameState();
+            updateUI();
+        }
+
+        function handleDeepSeaFailure() {
+            gameState.gameOver = true;
+            gameState.deathCount = (gameState.deathCount || 0) + 1;
+            showMessage('💀 深海钓鱼失败。游戏结束。', 'error');
+            saveGameState();
+            showSettlement();
+        }
+
+        // ========== 商店功能 ==========
+        function purchaseBoat(boatId) {
+            const boat = BOAT_CONFIG[boatId];
+            if (!boat) return;
+
+            const boatOrder = ['none', 'small', 'medium', 'large'];
+            const currentIndex = boatOrder.indexOf(gameState.boat);
+            const newIndex = boatOrder.indexOf(boatId);
+
+            if (newIndex <= currentIndex) {
+                showMessage('已经拥有此船只或更好的船只', 'error');
+                return;
+            }
+
+            if (gameState.money < boat.price) {
+                showMessage('资金不足', 'error');
+                return;
+            }
+
+            gameState.money -= boat.price;
+            gameState.boat = boatId;
+            showMessage(`✅ 购买了 ${boat.name}`, 'success');
+            saveGameState();
+            updateUI();
+        }
+
+        function purchaseBait(baitId, quantity = 1) {
+            const bait = BAIT_CONFIG[baitId];
+            if (!bait) return;
+
+            const totalCost = bait.price * quantity;
+            if (gameState.money < totalCost) {
+                showMessage('资金不足', 'error');
+                return;
+            }
+
+            gameState.money -= totalCost;
+            gameState.baitInventory[baitId] = (gameState.baitInventory[baitId] || 0) + quantity;
+            showMessage(`✅ 购买了 ${quantity} 个 ${bait.name}`, 'success');
+            saveGameState();
+            updateUI();
+        }
+
+        function purchaseConsumable(consumableId, quantity = 1) {
+            const consumable = CONSUMABLE_CONFIG[consumableId];
+            if (!consumable) return;
+
+            const totalCost = consumable.price * quantity;
+            if (gameState.money < totalCost) {
+                showMessage('资金不足', 'error');
+                return;
+            }
+
+            gameState.money -= totalCost;
+            gameState.consumables[consumableId] = (gameState.consumables[consumableId] || 0) + quantity;
+            showMessage(`✅ 购买了 ${quantity} 个 ${consumable.name}`, 'success');
+            saveGameState();
+            updateUI();
+        }
+
+        // ========== UI 更新 ==========
+        function updateUI() {
+            // 更新基本信息
+            document.getElementById('money').textContent = gameState.money;
+            document.getElementById('boat').textContent = BOAT_CONFIG[gameState.boat].name;
+            document.getElementById('caughtCount').textContent = Object.keys(gameState.caughtFish).length;
+            document.getElementById('achievementCount').textContent = gameState.achievements.length;
+
+            // 更新环境选择
+            updateEnvironmentSelect();
+
+            // 更新鱼类选择
+            updateFishSelect();
+
+            // 更新鱼饵选择
+            updateBaitSelect();
+
+            // 更新商店
+            updateShop();
+
+            // 更新库存
+            updateInventory();
+
+            // 更新成就
+            updateAchievements();
+        }
+
+        function updateEnvironmentSelect() {
+            const select = document.getElementById('environmentSelect');
+            select.innerHTML = '';
+            Object.values(ENVIRONMENT_CONFIG).forEach(env => {
+                if (canBoatAccessEnvironment(gameState.boat, env.id)) {
+                    const option = document.createElement('option');
+                    option.value = env.id;
+                    option.textContent = env.name;
+                    select.appendChild(option);
+                }
+            });
+            select.dispatchEvent(new Event('change'));
+        }
+
+        function updateFishSelect() {
+            const select = document.getElementById('fishSelect');
+            const environmentId = document.getElementById('environmentSelect').value;
+            const fishList = getFishByEnvironment(environmentId);
+            
+            select.innerHTML = '<option value="">-- 选择鱼类 --</option>';
+            fishList.forEach(fish => {
+                const option = document.createElement('option');
+                option.value = fish.id;
+                option.textContent = `${fish.name} (难度${fish.difficulty})`;
+                select.appendChild(option);
+            });
+        }
+
+        function updateBaitSelect() {
+            const select = document.getElementById('baitSelect');
+            const fishId = document.getElementById('fishSelect').value;
+            const fish = FISH_CONFIG[fishId];
+            
+            select.innerHTML = '<option value="">-- 选择鱼饵 --</option>';
+
+            if (fish) {
+                if (fish.requiredBaitType === 'plant') {
+                    if (gameState.baitInventory.plant > 0) {
+                        const option = document.createElement('option');
+                        option.value = 'plant';
+                        option.textContent = `植物性饵料 (${gameState.baitInventory.plant}个)`;
+                        select.appendChild(option);
+                    }
+                } else if (fish.requiredBaitType === 'live_fish') {
+                    // 显示可用的活鱼
+                    Object.keys(gameState.liveFishInventory).forEach(fishId => {
+                        const count = gameState.liveFishInventory[fishId];
+                        if (count > 0) {
+                            if (!fish.requiredSpecificBait || fish.requiredSpecificBait.includes(fishId)) {
+                                const option = document.createElement('option');
+                                option.value = fishId;
+                                option.textContent = `${FISH_CONFIG[fishId].name} (${count}个)`;
+                                select.appendChild(option);
+                            }
+                        }
+                    });
+                    // 也可以使用死鱼
+                    if (gameState.baitInventory.dead_fish > 0) {
+                        const option = document.createElement('option');
+                        option.value = 'dead_fish';
+                        option.textContent = `鱼块（死鱼） (${gameState.baitInventory.dead_fish}个)`;
+                        select.appendChild(option);
+                    }
+                }
+            }
+        }
+
+        function updateShop() {
+            // 船只商店
+            const boatShop = document.getElementById('boatShop');
+            boatShop.innerHTML = '';
+            Object.values(BOAT_CONFIG).forEach(boat => {
+                if (boat.id === 'none') return;
+                const boatOrder = ['none', 'small', 'medium', 'large'];
+                const currentIndex = boatOrder.indexOf(gameState.boat);
+                const boatIndex = boatOrder.indexOf(boat.id);
+                const canBuy = boatIndex > currentIndex && gameState.money >= boat.price;
+                
+                const div = document.createElement('div');
+                div.className = 'boat-item';
+                div.innerHTML = `
+                    <h3>${boat.name}</h3>
+                    <p>价格: ${boat.price}元</p>
+                    <button class="button" ${!canBuy ? 'disabled' : ''} onclick="purchaseBoat('${boat.id}')">购买</button>
+                `;
+                boatShop.appendChild(div);
+            });
+
+            // 鱼饵商店
+            const baitShop = document.getElementById('baitShop');
+            baitShop.innerHTML = '';
+            Object.values(BAIT_CONFIG).forEach(bait => {
+                const div = document.createElement('div');
+                div.className = 'bait-item';
+                div.innerHTML = `
+                    <h3>${bait.name}</h3>
+                    <p>价格: ${bait.price}元/个</p>
+                    <button class="button" onclick="purchaseBait('${bait.id}', 1)">买1个</button>
+                    <button class="button" onclick="purchaseBait('${bait.id}', 10)">买10个</button>
+                `;
+                baitShop.appendChild(div);
+            });
+
+            // 消耗品商店
+            const consumableShop = document.getElementById('consumableShop');
+            consumableShop.innerHTML = '';
+            Object.values(CONSUMABLE_CONFIG).forEach(consumable => {
+                const div = document.createElement('div');
+                div.className = 'bait-item';
+                div.innerHTML = `
+                    <h3>${consumable.name}</h3>
+                    <p>价格: ${consumable.price}元/个</p>
+                    <button class="button" onclick="purchaseConsumable('${consumable.id}', 1)">买1个</button>
+                `;
+                consumableShop.appendChild(div);
+            });
+        }
+
+        function updateInventory() {
+            // 鱼饵库存
+            const baitInventory = document.getElementById('baitInventory');
+            baitInventory.innerHTML = '';
+            Object.keys(BAIT_CONFIG).forEach(baitId => {
+                const count = gameState.baitInventory[baitId] || 0;
+                if (count > 0) {
+                    const div = document.createElement('div');
+                    div.className = 'bait-item';
+                    div.innerHTML = `<strong>${BAIT_CONFIG[baitId].name}:</strong> ${count}个`;
+                    baitInventory.appendChild(div);
+                }
+            });
+
+            // 活鱼库存
+            const liveFishInventory = document.getElementById('liveFishInventory');
+            liveFishInventory.innerHTML = '';
+            Object.keys(gameState.liveFishInventory).forEach(fishId => {
+                const count = gameState.liveFishInventory[fishId];
+                if (count > 0) {
+                    const div = document.createElement('div');
+                    div.className = 'fish-item';
+                    div.innerHTML = `<strong>${FISH_CONFIG[fishId].name}:</strong> ${count}个 (可用作鱼饵)`;
+                    liveFishInventory.appendChild(div);
+                }
+            });
+        }
+
+        function updateAchievements() {
+            const area = document.getElementById('achievementsArea');
+            area.innerHTML = '';
+            Object.values(ACHIEVEMENT_CONFIG).forEach(achievement => {
+                const hasAchievement = gameState.achievements.includes(achievement.id);
+                const div = document.createElement('div');
+                div.className = `achievement ${hasAchievement ? '' : 'locked'}`;
+                div.textContent = hasAchievement ? achievement.name : `${achievement.name} (未解锁)`;
+                area.appendChild(div);
+            });
+        }
+
+        function showMessage(message, type = 'info') {
+            const area = document.getElementById('messageArea');
+            const div = document.createElement('div');
+            div.className = `message ${type}`;
+            div.textContent = message;
+            area.appendChild(div);
+            setTimeout(() => div.remove(), 5000);
+        }
+
+        function showSettlement() {
+            const settlement = getSettlement();
+            const content = document.getElementById('settlementContent');
+            content.innerHTML = `
+                <div class="settlement-item">
+                    <strong>称号:</strong> ${settlement.achievements.map(a => a.name).join(', ')}
+                </div>
+                <div class="settlement-item">
+                    <strong>钓到鱼种:</strong> ${settlement.fishSpeciesCaught} / ${settlement.totalFishSpecies}
+                </div>
+                <div class="settlement-item">
+                    <strong>最稀有鱼:</strong> ${settlement.rarestFish ? settlement.rarestFish.name : '无'}
+                </div>
+                <div class="settlement-item">
+                    <strong>最大单鱼价值:</strong> ${settlement.maxValueFish ? settlement.maxValueFish.value + '元 (' + settlement.maxValueFish.name + ')' : '无'}
+                </div>
+                <div class="settlement-item">
+                    <strong>总游戏时间:</strong> ${Math.floor(settlement.totalGameTime / 60)}分钟
+                </div>
+                <div class="settlement-item">
+                    <strong>死亡次数:</strong> ${settlement.deathCount}
+                </div>
+            `;
+            document.getElementById('settlementModal').classList.add('active');
+        }
+
+        function closeSettlement() {
+            document.getElementById('settlementModal').classList.remove('active');
+        }
+
+        function getSettlement() {
+            const caughtCount = Object.keys(gameState.caughtFish).length;
+            const allFishIds = Object.keys(FISH_CONFIG);
+            
+            let rarestFish = null;
+            let maxDifficulty = 0;
+            Object.keys(gameState.caughtFish).forEach(fishId => {
+                const fish = FISH_CONFIG[fishId];
+                if (fish && fish.difficulty > maxDifficulty) {
+                    maxDifficulty = fish.difficulty;
+                    rarestFish = { id: fish.id, name: fish.name, difficulty: fish.difficulty };
+                }
+            });
+
+            let maxValue = 0;
+            let maxValueFish = null;
+            Object.keys(gameState.caughtFish).forEach(fishId => {
+                const fish = FISH_CONFIG[fishId];
+                if (fish) {
+                    const record = gameState.caughtFish[fishId];
+                    const estimatedValue = fish.basePrice * (1 + record.maxWeight / 10);
+                    if (estimatedValue > maxValue) {
+                        maxValue = estimatedValue;
+                        maxValueFish = { id: fish.id, name: fish.name, value: Math.floor(estimatedValue) };
+                    }
+                }
+            });
+
+            const achievements = gameState.achievements.map(id => ({
+                id,
+                name: ACHIEVEMENT_CONFIG[id]?.name || id
+            }));
+
+            const timeDiff = Math.floor((Date.now() - gameState.lastUpdateTime) / 1000);
+            const totalGameTime = gameState.gameTime + timeDiff;
+
+            return {
+                achievements,
+                fishSpeciesCaught: caughtCount,
+                totalFishSpecies: allFishIds.length,
+                rarestFish,
+                maxValueFish,
+                totalGameTime,
+                deathCount: gameState.deathCount || 0
+            };
+        }
+
+        function resetGame() {
+            if (confirm('确定要重新开始游戏吗？所有进度将丢失！')) {
+                resetGameState();
+                closeSettlement();
+                showMessage('游戏已重置', 'success');
+            }
+        }
+
+        function endGame() {
+            gameState.gameOver = true;
+            saveGameState();
+            showSettlement();
+        }
+
+        // ========== 事件监听 ==========
+        document.getElementById('environmentSelect').addEventListener('change', updateFishSelect);
+        document.getElementById('fishSelect').addEventListener('change', updateBaitSelect);
+
+        // ========== 初始化 ==========
+        loadGameState();
+        updateUI();
+    </script>
+</body>
+</html>
+
